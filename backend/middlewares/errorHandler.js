@@ -2,7 +2,7 @@ import { CustomErrorHandler } from '../services';
 
 const errorHandler = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
-    err.message = process.env.DEBUG_MODE === 'true' && err.message && err.message|| "Internal Server Error";
+    err.message = process.env.DEBUG_MODE === 'true' && err.message && err.message || "Internal Server Error";
 
     // Wrong Mongodb Id error
     if (err.name === "CastError") {

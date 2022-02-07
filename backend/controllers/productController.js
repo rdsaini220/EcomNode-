@@ -4,15 +4,16 @@ import { ApiFeatures } from "../utils";
 
 const productController = {
     // Create Product    
-    async addNew(req, res, next){
+    async addNew(req, res, next) {
         req.body.createdBy = req.user.id
+
         // save user data in database 
         const product = new Product(req.body)
         const data = await product.save();
 
         res.status(200).json({ success: true, data });
     },
-    
+
     async getAll(req, res) {
         // get data in database 
         const total = await Product.countDocuments();
@@ -20,6 +21,15 @@ const productController = {
         // get data in database 
         const data = await apiFeatures.query;
         res.status(200).json({ success: true, total, data });
+    },
+
+    // get single product
+    async getSingle(req, res, next) {
+        const data = await Product.find({ slug: req.params.slug });
+        if (!data) {
+            return next(new CustomErrorHandler("Product not found with this Slug", 404));
+        }
+        res.status(200).json({ success: true, data });
     },
 
     async updateData(req, res, next) {
@@ -50,7 +60,7 @@ const productController = {
         // get by id product data updates
         const data = await product.remove()
 
-        res.status(200).json({ success: true, message:"Product delete successfull",  data });
+        res.status(200).json({ success: true, message: "Product delete successfull", data });
     },
 }
 

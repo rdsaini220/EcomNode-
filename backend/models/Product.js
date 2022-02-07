@@ -4,15 +4,16 @@ import slug from 'mongoose-slug-updater';
 mongoose.plugin(slug);
 
 const productSchema = mongoose.Schema({
-    name:{
+    name: {
         unique: true,
-        type:String,
+        type: String,
         required: [true, "Please Enter Product Name"],
-        trim:true
+        trim: true
     },
-    slug: { 
-        type: String, 
-        slug: "name" 
+    slug: {
+        type: String,
+        slug: "name",
+        unique: true
     },
     description: {
         type: String,
@@ -20,50 +21,51 @@ const productSchema = mongoose.Schema({
     },
     price: {
         type: Number,
-        maxLength:[8, "Price cannot exceed 8 characters"],
+        maxLength: [8, "Price cannot exceed 8 characters"],
         required: [true, "Please Enter Product Price"]
     },
-    images:[
-        {
-            public_id: {
-                type: String,
-                required: true
-            },
-            url: {
-                type: String,
-                required: true
-            },
-        }
-    ],
-    category:{
+    images: [{
+        public_id: {
+            type: String,
+            required: true
+        },
+        url: {
+            type: String,
+            required: true
+        },
+    }],
+    category: {
         type: String,
         required: [true, "Please Enter Product Category"]
     },
-    stock:{
-        type: Number,        
+    stock: {
+        type: Number,
         maxLength: [4, "Stock cannot exceed 4 characters"],
         required: [true, "Please Enter Product Price"],
         default: 1
     },
-    reviews: [
-        {
-            name:{
-                type: String,
-                required: true,
-            },
-            rating: {
-                type: Number,
-                required: true,
-            },
-            comment: {
-                type: String,
-                required: true,
-            },
-        }
-    ],
-    rating: {
+    reviews: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        name: {
+            type: String,
+            required: true,
+        },
+        rating: {
+            type: Number,
+            required: true,
+        },
+        comment: {
+            type: String,
+            required: true,
+        },
+    }],
+    ratings: {
         type: Number,
-        default:0
+        default: 0
     },
     status: {
         type: Boolean,
