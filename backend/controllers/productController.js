@@ -15,17 +15,18 @@ const productController = {
     },
 
     async getAll(req, res) {
-        // get data in database 
-        const total = await Product.countDocuments();
-        const apiFeatures = new ApiFeatures(Product.find(), req.query).search().filters().pagination();
+        const per_page = 2;
+        const total_product = await Product.countDocuments();
+        const apiFeatures = new ApiFeatures(Product.find(), req.query).search().filters().pagination(per_page);
         // get data in database 
         const data = await apiFeatures.query;
-        res.status(200).json({ success: true, total, data });
+        let filtered_products_total = data.length;
+        res.status(200).json({ success: true, data, total_product, per_page, filtered_products_total });
     },
 
     // get single product
     async getSingle(req, res, next) {
-        const data = await Product.find({ slug: req.params.slug });
+        const data = await Product.findOne({ slug: req.params.slug });
         if (!data) {
             return next(new CustomErrorHandler("Product not found with this Slug", 404));
         }

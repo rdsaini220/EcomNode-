@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import cloudinary from "cloudinary";
 
 import { User } from "../models";
 import { CustomErrorHandler } from "../services";
@@ -7,15 +8,22 @@ import { sendToken, sendEmail } from "../utils";
 const userController = {
     // Create User    
     async addUser(req, res, next) {
+        const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+            folder: "profile",
+            width: 150,
+            crop: "scale",
+        });
         const { name, email, password, image = {} } = req.body;
         // save user data in database 
         const data = await User.create({
             name,
             email,
             password,
-            image
+            image:{
+                public_id: myCloud.public_id,
+                url: myCloud.secure_url,
+            }
         })
-
         // send respons        
         sendToken(data, 201, res)
     },
@@ -27,7 +35,7 @@ const userController = {
         if (!email || !password) {
             return next(new CustomErrorHandler("Please Enter Email & Password", 400));
         }
-        const data = await User.findOne({ email }).select("+password");
+        let data = await User.findOne({ email }).select("+password");
         if (!data) {
             return next(new CustomErrorHandler("Invalid email or password", 401));
         }
@@ -36,7 +44,9 @@ const userController = {
         if (!isPasswordMatch) {
             return next(new CustomErrorHandler("Invalid email or password", 401));
         }
-
+        if (data.status === false) {
+            return next(new CustomErrorHandler("This account is blocked", 203));
+        }
         // send respons        
         sendToken(data, 200, res)
     },

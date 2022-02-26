@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import cloudinary from "cloudinary";
 
 import app from "./app";
 import dbConnect from "./config/database";
@@ -14,6 +15,12 @@ dotenv.config({path:"backend/.env"})
 
 // database connect
 dbConnect()
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+})
 
 const server = app.listen(process.env.PORT, ()=> {
     console.log(`Listing on a port ${process.env.PORT}.`);
