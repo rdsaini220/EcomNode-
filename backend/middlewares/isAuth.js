@@ -4,7 +4,7 @@ import catchAsyncErrors from './catchAsyncErrors';
 import { User } from '../models';
 
 const isAuthenthicate = catchAsyncErrors(async (req, res, next) => {
-    const { token } = req.cookies;
+    const token = req.headers.authorization;
     if(!token){
         return next(new CustomErrorHandler("Please Login to access this resource", 401));
     }

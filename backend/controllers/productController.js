@@ -16,7 +16,7 @@ const productController = {
 
     async getAll(req, res) {
         const per_page = 2;
-        const total_product = await Product.countDocuments();
+        const total_product = 0
         const apiFeatures = new ApiFeatures(Product.find(), req.query).search().filters().pagination(per_page);
         // get data in database 
         const data = await apiFeatures.query;

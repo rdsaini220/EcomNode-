@@ -2,12 +2,15 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import FileUpload from "express-fileupload";
+import cors from "cors";
 const app = express();
 
 import routes from './routes';
 import { errorHandler } from "./middlewares";
 
 app.use(express.json())
+app.use(cors())
+app.options('*', cors());
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(FileUpload())

@@ -1,4 +1,6 @@
-const sendToken = (user, statusCode, res) => {
+import { RefreshToken } from "../models";
+
+const sendToken = async (user, statusCode, res) => {
     const token = user.getJWTToken()
     // opctions for cookies
     const opctions = {
@@ -6,6 +8,7 @@ const sendToken = (user, statusCode, res) => {
             Date.now() + process.env.COOKIE_EXPRIE * 24 * 60 * 60 * 1000 
         )
     };
+    await RefreshToken.create({ token })
     res.status(statusCode).cookie("token", token, opctions).json({
         success:true,
         token,

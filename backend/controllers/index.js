@@ -6,3 +6,5 @@ export { default as reviewController }
 from './reviewController';
 export { default as orderController }
 from './orderController';
+export { default as authController }
+from './authController';
