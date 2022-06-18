@@ -1,12 +1,12 @@
 import express from 'express';
-import { authController, userController, productController, reviewController, orderController,  } from '../controllers';
+import { authController, userController, productController, reviewController, orderController, paymentController,  } from '../controllers';
 import { catchAsyncErrors, isAuth, authorizeRoles } from "../middlewares";
 const router = express.Router();
 
 //Auth Routes
 router.post('/register', catchAsyncErrors(authController.register))
 router.post('/login', catchAsyncErrors(authController.login))
-router.get('/refresh', catchAsyncErrors(authController.refresh))
+router.get('/refresh-token', isAuth, catchAsyncErrors(authController.refreshToken))
 router.get('/logout', isAuth, catchAsyncErrors(authController.logout))
 router.post('/password/forgot', catchAsyncErrors(authController.forgotPassword))
 router.put('/password/reset/:token', catchAsyncErrors(authController.resetPassword))
@@ -36,6 +36,11 @@ router.delete('/review', isAuth, catchAsyncErrors(reviewController.deleteData))
 //Order Routes
 router.post('/order', isAuth, catchAsyncErrors(orderController.addNew))
 router.get('/orders', isAuth, catchAsyncErrors(orderController.myOrder))
+
+//Payment routes
+router.post('/payment/process', isAuth, catchAsyncErrors(paymentController.processPayment))
+router.get('/stripeapikey', isAuth, catchAsyncErrors(paymentController.sendStripeApiKey))
+
 //Admin control order routes
 router.get('/admin/orders', isAuth, authorizeRoles('admin'), catchAsyncErrors(orderController.getAll))
 router.get('/admin/order/:id', isAuth, authorizeRoles('admin'), catchAsyncErrors(orderController.getSingle))

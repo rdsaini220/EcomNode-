@@ -8,12 +8,12 @@ import { sendToken, sendEmail } from "../utils";
 const authController = {
     // Create User    
     async register(req, res, next) {
-        const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
+        const myCloud = await cloudinary.v2.uploader.upload(req.body.image, {
             folder: "profile",
             width: 150,
             crop: "scale",
         });
-        const { name, email, password, image = {} } = req.body;
+        const { name, email, password } = req.body;
         // save user data in database 
         const data = await User.create({
             name,
@@ -45,9 +45,9 @@ const authController = {
             return next(new CustomErrorHandler("Invalid email or password", 401));
         }
         if (data.status === false) {
-            return next(new CustomErrorHandler("This account is blocked", 203));
+            return next(new CustomErrorHandler("This account is Temporarily Blocked", 203));
         }
-        // send respons        
+        // send respons 
         sendToken(data, 200, res)
     },
 
@@ -63,13 +63,14 @@ const authController = {
     },
 
     // Refresh User
-    async refresh(req, res, next) {
+    async refreshToken(req, res, next) {
         const token = req.headers.authorization;
-        console.log(token)
-        const data = await RefreshToken.findOne({ token })
-        if (!data) {
-            return next(new CustomErrorHandler(`User login does not exist with token ${token}`, 404));
+        const tokenData = await RefreshToken.findOne({ token })
+        if (!tokenData) {
+            return next(new CustomErrorHandler(`Your session has timed out. Please login again`, 404));
         }
+        await tokenData.remove()
+        let data = await User.findById(req.user.id)
         // send respons     
         sendToken(data, 200, res)
     },

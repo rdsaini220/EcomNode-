@@ -1,3 +1,5 @@
+import cloudinary from "cloudinary";
+
 import { User } from "../models";
 import { CustomErrorHandler } from "../services";
 import { sendToken } from "../utils";
@@ -26,8 +28,25 @@ const userController = {
 
     // update user details 
     async updateUser(req, res) {
-        let { name, email } = req.body;
-        const data = await User.findByIdAndUpdate(req.user.id, { name, email }, { new: true, runValidators: true, useFindAndModify: false });
+        let { name, email, image } = req.body;
+        var userData = { name, email }
+        if (image !== ""){
+            const userD = await User.findById(req.user.id)
+            const imageId = userD.image.public_id;
+            if(imageId){
+                await cloudinary.v2.uploader.destroy(imageId)
+            }
+            const myCloud = await cloudinary.v2.uploader.upload(image, {
+                folder: "profile",
+                width: 150,
+                crop: "scale",
+            });
+            userData.image = {
+                public_id: myCloud.public_id,
+                url: myCloud.secure_url,
+            }
+        }
+        const data = await User.findByIdAndUpdate(req.user.id, userData, { new: true, runValidators: true, useFindAndModify: false });
 
         // send respons        
         sendToken(data, 200, res);

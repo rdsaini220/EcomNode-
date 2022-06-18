@@ -8,3 +8,5 @@ export { default as orderController }
 from './orderController';
 export { default as authController }
 from './authController';
+export { default as paymentController }
+from './paymentController';

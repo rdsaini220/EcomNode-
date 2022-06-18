@@ -17,6 +17,39 @@ const userSchema = mongoose.Schema({
         unique:true,
         validate:[validator.isEmail, 'Please Enter a valid Email']
     },
+    gender: {
+        type: String
+    },
+    address: [{
+        address: {
+            type: String,
+            required: true
+        },
+        city: {
+            type: String,
+            required: true
+        },
+        state: {
+            type: String,
+            required: true
+        },
+        country: {
+            type: String,
+            required: true
+        },
+        pinCode: {
+            type: Number,
+            required: true
+        },
+        phoneNo: {
+            type: Number,
+            required: true
+        },
+        default: {
+            type: Boolean,
+            default: false
+        },
+    }],
     password: {
         type: String,
         minLength: [8, "Name should have more than 4 characters"],
