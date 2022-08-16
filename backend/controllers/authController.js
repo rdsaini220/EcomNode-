@@ -25,7 +25,7 @@ const authController = {
             }
         })
         // send respons        
-        sendToken(data, 201, res)
+        sendToken(data, 201, res, "Account Created Successfully")
     },
 
     // Login User 
@@ -48,7 +48,7 @@ const authController = {
             return next(new CustomErrorHandler("This account is Temporarily Blocked", 203));
         }
         // send respons 
-        sendToken(data, 200, res)
+        sendToken(data, 200, res, 'Login Successfully')
     },
 
     // Logout User 
@@ -72,7 +72,7 @@ const authController = {
         await tokenData.remove()
         let data = await User.findById(req.user.id)
         // send respons     
-        sendToken(data, 200, res)
+        sendToken(data, 200, res, 'Refresh Successfully')
     },
 
     // Forgot Password  
@@ -121,7 +121,7 @@ const authController = {
         await data.save()
 
         // send respons        
-        sendToken(data, 200, res)
+        sendToken(data, 200, res, 'Password change Successfully')
     }
 }
 
